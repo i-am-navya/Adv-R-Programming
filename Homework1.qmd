@@ -1,0 +1,84 @@
+---
+title: "Advanced R Programming - Homework 1"
+author: "Navya Zacharia - 24209002"
+format: pdf
+editor: visual
+execute:
+  warning: false  
+  error: false    
+  message: false
+  echo: false
+---
+
+```{r}
+# Required libraries
+library(dplyr) 
+library(knitr)
+library(ggplot2)
+```
+
+# Introduction
+
+I have chosen `iris` dataset for this homework. The `iris` dataset is one of the most popular datasets in data science. It has measurements of 150 iris flowers such as *sepal length*, *sepal width*, *petal length* and *petal width*. There are three species: *setosa*, *versicolor*, and *virginica*.
+
+In this document, I summarize the iris dataset using descriptive statistics and create visualizations to explore differences between the species.
+
+## Summary Statistics
+
+I have used the `dplyr` and `knitr` packages for creating a summary table showing the average measurements for each iris species.
+
+```{r}
+summary <- iris |>
+  group_by(Species) |>
+  summarise(
+    Count        = n(),
+    Sepal.Length = round(mean(Sepal.Length), 2),
+    Sepal.Width  = round(mean(Sepal.Width), 2),
+    Petal.Length = round(mean(Petal.Length), 2),
+    Petal.Width  = round(mean(Petal.Width), 2)
+  )
+
+kable(summary, caption = "Average Measurements and Count for Each Species")
+```
+
+All three iris species *setosa*, *versicolor*, and *virginica*have equal number of observations.
+
+-   \textcolor{red}{Setosa} has the smallest petal dimensions, with an average petal length of 1.46 cm and petal width of 0.25 cm and both sepal length and width are also relatively small, though its sepal width 3.43 cm which is slightly higher than the other two species. This species is **smaller** in flower size compared to the others.
+
+-   \textcolor{green}{Versicolor} has medium-sized petals, with an average petal length of 4.26 cm and width of 1.33 cm. Its sepals are also moderate in size — around 5.94 cm long and 2.77 cm wide. Overall, it falls between setosa and virginica in terms of flower size and shape. i.e **medium** in flower size.
+
+-   \textcolor{blue}{Virginica} has the largest petal dimensions, with a petal length of 5.55 cm and width of 2.03 cm. It also has the longest sepals, averaging 6.59 cm in length and 2.97 cm in width. This species is clearly the **largest** among the three species.
+
+## Plots
+
+### Box Plot
+
+```{r fig.width=8, fig.height=8}
+boxplot(Petal.Length ~ Species,
+        data = iris,
+        col = c("lightcoral", "lightgreen", "lightskyblue"),
+        main = "Petal Length by Iris Species",
+        xlab = "Species",
+        ylab = "Petal Length in cm")
+```
+
+The boxplot shows clear differences in petal length across the three iris species. **Setosa** has the shortest petals, all tightly grouped around 1.5 cm. **Versicolor** falls in the middle, with more variation and a few values dipping below 3 cm. **Virginica** has the longest petals, reaching up to 7 cm and showing a wider spread. Overall, petal length is a strong feature for classifying the species, especially for identifying setosa.
+
+### Scatter Plot
+
+```{r fig.width=8, fig.height=8}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) +
+  geom_point(size = 3) +
+  labs(
+    title = "Petal Length vs Width by Iris Species",
+    x = "Petal Length (cm)",
+    y = "Petal Width (cm)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.title = element_blank()
+  )
+```
+
+The scatter plot shows how petal length and width vary across the three iris species. **Setosa** (red) is clearly separated in the lower-left corner, with very short and narrow petals. **Versicolor** (green) lies in the middle with moderate values and overlaps slightly with virginica. **Virginica** (blue) appears in the top-right, having the longest and widest petals. The three groups are visually distinct, especially setosa, making these two features excellent for species classification.
